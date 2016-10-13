@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+  <!--  <link rel="stylesheet" href="/static/jsqrcode-combined.min.js" media="screen" title="no title">-->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <!--<link rel="stylesheet" href="/static/css/principal.css" media="screen" title="no title">-->
+    <meta charset="utf-8">
+    <title>interfaz..</title>
+
+<style>
+  body{
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  #results{
+    text-align: center;
+  }
+</style>
+
+  </head>
+
+  <body>
+    <p style="width:100%; text-align:center; margin:0;padding:0;"><strong>Instrucciones:</strong> Posiciona el el codigo sobre el area visible para ingresar.</p>
+  <div id="reader" style="width:400px;height:400px;margin:0 auto;">
+ </div>
+<div id="results" style="margin:0 auto;">
+    <h3></h3>
+    <h2 id="user"></h2>
+    <h2 id="password"></h2>
+    <h2 id="contenido"></h2>
+</div>
+<br>
+<form>
+  <div class="group">
+    <input type="text"><span class="highlight"></span><span class="bar"></span>
+    <label>Usuario</label>
+  </div>
+  <div class="group">
+    <input type="password"><span class="highlight"></span><span class="bar"></span>
+    <label>Contraseña</label>
+  </div>
+  <button type="button" class="button buttonBlue">Iniciar Sesión
+    <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+  </button>
+</form>
+
+
+<script   type="text/javascript"  src="/static/jquery-1.9.1.min.js"></script>
+
+<script type="text/javascript" src="/static/html5-qrcode.min.js">
+</script>
+
+<script type="text/javascript">
+$('#reader').html5_qrcode(function(data){
+  var stringData = data;
+  $("#contenido").text("Lectura del codigo: " + data).css("color","orange");
+  if(stringData.includes("U:") && stringData.includes("P:"))
+  {
+    stringData = stringData.replace('U:','').replace('P:','');
+    stringData = stringData.split("|");
+    $("#results").find("h3").text("El resultado es correcto").css("color","green");
+    $("#user").text("User: " + stringData[0]);
+    $("#password").text("Password: " + stringData[1]);
+
+  }
+  else{
+    $("#results").find("h3").html("El codigo no contiene la estructura correcta").css("color","tomato");
+       // do something when code is read
+    $("#user").text("");
+    $("#password").text("");
+  }
+},
+  function(error){
+      //console.log(error);
+  }, function(videoError){
+      //the video stream could be opened
+    //  console.log(videoError);
+  }
+);
+</script>
+  </body>
+</html>
