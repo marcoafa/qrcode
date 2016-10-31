@@ -28,7 +28,7 @@
     <h3></h3>
     <h2 id="user"></h2>
     <h2 id="password"></h2>
-    <h2 id="contenido"></h2>
+    <h2 id="contenido">{{status}}</h2>
 </div>
 <br>
 <form>
@@ -52,6 +52,27 @@
 </script>
 
 <script type="text/javascript">
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+</script>
+
+<script type="text/javascript">
+
 $('#reader').html5_qrcode(function(data){
   var stringData = data;
   $("#contenido").text("Lectura del codigo: " + data).css("color","orange");
@@ -62,6 +83,47 @@ $('#reader').html5_qrcode(function(data){
     $("#results").find("h3").text("El resultado es correcto").css("color","green");
     $("#user").text("User: " + stringData[0]);
     $("#password").text("Password: " + stringData[1]);
+
+
+    //Variables para mandar usuario y password
+    var name = stringData[0];
+    var passw = stringData[1];
+    
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    debugger;
+    $.ajax({
+      url:'send/',
+      method: 'post',
+      data: {crfmiddlewaretoken:'{{csrf_token}}',name:name,password:passw},
+
+      success:function(json){
+        debugger;
+        alert(json);
+      },
+      //beforeSend: function( xhr){
+        //xhr.overrideMimeType("");
+      //}
+      error:function(xhr,errMsg,throwError){
+
+        debugger;
+
+      }
+
+
+
+    });
+
 
   }
   else{
