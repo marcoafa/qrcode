@@ -4,6 +4,7 @@
 
   <!--  <link rel="stylesheet" href="/static/jsqrcode-combined.min.js" media="screen" title="no title">-->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/principal.css" media="screen" title="no title">
   <!--<link rel="stylesheet" href="/static/css/principal.css" media="screen" title="no title">-->
     <meta charset="utf-8">
     <title>interfaz..</title>
@@ -21,29 +22,16 @@
   </head>
 
   <body>
-    <p style="width:100%; text-align:center; margin:0;padding:0;"><strong>Instrucciones:</strong> Posiciona el el codigo sobre el area visible para ingresar.</p>
+    <p style="width:100%; text-align:center; margin:0;padding:0; color:springgreen; font-size:20pt;"><strong>Instrucciones:</strong> Posiciona el el codigo sobre el area visible para ingresar.</p>
   <div id="reader" style="width:400px;height:400px;margin:0 auto;">
  </div>
 <div id="results" style="margin:0 auto;">
-    <h3></h3>
-    <h2 id="user"></h2>
-    <h2 id="password"></h2>
-    <h2 id="contenido">{{status}}</h2>
+    <h3 tyle="font-size:20pt;"></h3>
+    <h2 style="color:springgreen; font-size:20pt;" id="user"></h2>
+    <h2 style="color:springgreen; font-size:20pt;" id="password"></h2>
+
 </div>
 <br>
-<form>
-  <div class="group">
-    <input type="text"><span class="highlight"></span><span class="bar"></span>
-    <label>Usuario</label>
-  </div>
-  <div class="group">
-    <input type="password"><span class="highlight"></span><span class="bar"></span>
-    <label>Contraseña</label>
-  </div>
-  <button type="button" class="button buttonBlue">Iniciar Sesión
-    <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
-  </button>
-</form>
 
 
 <script   type="text/javascript"  src="/static/jquery-1.9.1.min.js"></script>
@@ -80,15 +68,12 @@ $('#reader').html5_qrcode(function(data){
   {
     stringData = stringData.replace('U:','').replace('P:','');
     stringData = stringData.split("|");
-    $("#results").find("h3").text("El resultado es correcto").css("color","green");
-    $("#user").text("User: " + stringData[0]);
-    $("#password").text("Password: " + stringData[1]);
-
+    $("#results").find("h3").text("Formato correcto").css("color","yellow");
 
     //Variables para mandar usuario y password
     var name = stringData[0];
     var passw = stringData[1];
-    
+
     function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -107,16 +92,15 @@ $('#reader').html5_qrcode(function(data){
       method: 'post',
       data: {crfmiddlewaretoken:'{{csrf_token}}',name:name,password:passw},
 
-      success:function(json){
-        debugger;
-        alert(json);
+      success:function(js){
+        $("#user").text("User: " + stringData[0]);
+        $("#password").text(js.result);
+
       },
       //beforeSend: function( xhr){
         //xhr.overrideMimeType("");
       //}
       error:function(xhr,errMsg,throwError){
-
-        debugger;
 
       }
 
@@ -127,7 +111,7 @@ $('#reader').html5_qrcode(function(data){
 
   }
   else{
-    $("#results").find("h3").html("El codigo no contiene la estructura correcta").css("color","tomato");
+    $("#results").find("h3").html("El codigo no contiene la estructura correcta").css("color","springgreen");
        // do something when code is read
     $("#user").text("");
     $("#password").text("");

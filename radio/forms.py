@@ -1,5 +1,5 @@
 from django import forms
-from .models import Email
+from .models import Email, Us
 from django.core.mail import EmailMessage
 
 
@@ -26,3 +26,8 @@ class EmailForm(forms.ModelForm):
     def _clean_attach(self):
         attach = self.cleaned_data.get('attach')
         return attach
+
+class Usform(forms.ModelForm):
+    class Meta:
+        model= Us
+        fields = ['user','password','valid']
